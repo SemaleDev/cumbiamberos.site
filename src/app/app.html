@@ -1,0 +1,468 @@
+<header class="chicha-header">
+    <div class="chicha-header-content">
+      <h1 class="chicha-text-yellow main-title" (dblclick)="openAdminLogin()">CUMBIAMBEROS</h1>
+      <h2 class="chicha-text-green main-subtitle">Cumbia y más cumbia</h2>
+
+    @if (isAdmin()) {
+      <div class="admin-indicator-bar">
+        <span class="admin-indicator-text">MODO ADMIN ACTIVO</span>
+        <button (click)="logout()" class="admin-btn">Salir</button>
+      </div>
+    }
+    </div>
+  </header>
+
+  <div class="ticker-wrap">
+  <div class="ticker-track">
+    
+    <div class="ticker-group">
+      <span class="ticker-item">EL DESVÍO</span>
+      <span class="ticker-item">PARQUE DEL PERIODISTA</span>
+      <span class="ticker-item">LA CURVA</span>
+      <span class="ticker-item">CASA LA TRIBU</span>
+      <span class="ticker-item">PASAJE CERVANTES</span>
+      <span class="ticker-item">SILENCIO Y RUIDO</span>
+    </div>
+
+    <div class="ticker-group" aria-hidden="true">
+      <span class="ticker-item">EL DESVÍO</span>
+      <span class="ticker-item">PARQUE DEL PERIODISTA</span>
+      <span class="ticker-item">LA CURVA</span>
+      <span class="ticker-item">CASA LA TRIBU</span>
+      <span class="ticker-item">PASAJE CERVANTES</span>
+      <span class="ticker-item">SILENCIO Y RUIDO</span>
+    </div>
+
+  </div>
+</div>
+
+  <main class="cumbiamberos-container">
+    
+    <nav class="tabs-container">
+      <button class="tab-btn" [class.active]="activeTab() === 'gallery'" (click)="selectTab('gallery')">
+        Archivo de Fotos
+      </button>
+      <button class="tab-btn" [class.active]="activeTab() === 'events'" (click)="selectTab('events')">
+        Cartelera de Eventos
+      </button>
+      <button class="tab-btn" [class.active]="activeTab() === 'music'" (click)="selectTab('music')">
+        Sonido de la Semana
+      </button>
+      <button class="tab-btn" [class.active]="activeTab() === 'collectives'" (click)="selectTab('collectives')">
+        Cumbiamberxs
+      </button>
+    </nav>
+
+    <!-- ==================== GALLERY ==================== -->
+    @if (activeTab() === 'gallery') {
+      <section>
+        <div class="section-header border-pink">
+          <h3 class="chicha-text-pink section-title">MURAL</h3>
+          @if (isAdmin()) {
+            <button class="chicha-btn chicha-btn-pink" (click)="openPostModal()">+ Añadir al Archivo</button>
+          }
+        </div>
+        
+        <div class="photo-grid">
+          @for (post of posts(); track post.id) {
+            <article class="chicha-card photo-card">
+              <span class="chicha-badge chicha-badge-yellow">{{ post.date }}</span>
+              
+              <div class="photo-card-img-wrapper" style="position: relative;">
+                @if (post.imageUrls && post.imageUrls.length > 0) {
+                  <div class="carousel-container" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; position: relative; background: #000;">
+                    <img [src]="post.imageUrls[getCarouselIndex(post.id)]" style="max-width: 100%; max-height: 100%; object-fit: contain;">
+                    
+                    <!-- Carousel Controls if more than 1 image -->
+                    @if (post.imageUrls.length > 1) {
+                      <button class="carousel-btn prev-btn" (click)="prevImage(post.id, post.imageUrls.length)">&#10094;</button>
+                      <button class="carousel-btn next-btn" (click)="nextImage(post.id, post.imageUrls.length)">&#10095;</button>
+                      <div class="carousel-indicator">
+                        {{ getCarouselIndex(post.id) + 1 }} / {{ post.imageUrls.length }}
+                      </div>
+                    }
+                  </div>
+                } @else {
+                  <div class="photo-placeholder">
+                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                      <circle cx="12" cy="13" r="4"></circle>
+                    </svg>
+                    <span style="font-family: var(--font-accent);">{{ post.place }}</span>
+                  </div>
+                }
+              </div>
+
+              <div class="photo-card-content">
+                <ul class="meta-info-list">
+                  <li><strong>Lugar:</strong> {{ post.place }}</li>
+                  <li><strong>Artistas:</strong> {{ post.artists }}</li>
+                  <li><strong>Detalle:</strong> {{ post.description }}</li>
+                </ul>
+                @if (post.postUrl) {
+                  <a [href]="post.postUrl" target="_blank" class="instagram-btn-link">Ver en Instagram </a>
+                }
+                @if (isAdmin()) {
+                  <div style="display: flex; gap: 10px; margin-top: 10px; border-top: 1px dashed rgba(255,255,255,0.2); padding-top: 10px;">
+                    <button (click)="editPost(post)" class="chicha-btn chicha-btn-yellow" style="flex: 1; padding: 5px; font-size: 0.9rem;"> Editar</button>
+                    <button (click)="deletePost(post.id)" class="chicha-btn chicha-btn-pink" style="flex: 1; padding: 5px; font-size: 0.9rem; background: red; color: white;"> Borrar</button>
+                  </div>
+                }
+              </div>
+            </article>
+          }
+        </div>
+      </section>
+    }
+
+    <!-- ==================== EVENTS ==================== -->
+    @if (activeTab() === 'events') {
+      <section>
+        <div class="section-header border-green">
+          <h3 class="chicha-text-green section-title">CARTELERA DE CUMBIA</h3>
+          @if (isAdmin()) {
+            <button class="chicha-btn chicha-btn-cyan" (click)="openEventModal()">+ Reportar Evento</button>
+          }
+        </div>
+
+        <div class="events-grid">
+          @for (event of events(); track event.id) {
+            <article class="event-flyer flyer-{{ event.posterColor }}">
+              <div class="flyer-header">
+                <div class="flyer-date">{{ event.date }}</div>
+                <div class="flyer-time">{{ event.time }}</div>
+              </div>
+              
+              <div class="flyer-body">
+                <h4 class="flyer-title">{{ event.title }}</h4>
+                <div class="flyer-artists">{{ event.artists }}</div>
+                <div class="flyer-place">{{ event.place }}</div>
+              </div>
+
+              <div class="flyer-footer">
+                <span class="flyer-price">{{ event.price }}</span>
+                <span class="flyer-desc">{{ event.description }}</span>
+              </div>
+              
+              @if (event.instagramUrl) {
+                <div style="text-align: center; margin-top: 15px; border-top: 2px dashed #000; padding-top: 10px;">
+                  <a [href]="event.instagramUrl" target="_blank" style="color: #000; font-family: var(--font-accent); text-decoration: none; font-size: 0.9rem; text-transform: uppercase;">
+                     Ver en Instagram
+                  </a>
+                </div>
+              }
+              @if (isAdmin()) {
+                <div style="display: flex; gap: 10px; padding: 10px; border-top: 2px dashed #000; background: rgba(0,0,0,0.1); margin-top: 15px;">
+                  <button (click)="editEvent(event)" class="chicha-btn chicha-btn-yellow" style="flex: 1; padding: 5px; font-size: 0.9rem;"> Editar</button>
+                  <button (click)="deleteEvent(event.id)" class="chicha-btn chicha-btn-pink" style="flex: 1; padding: 5px; font-size: 0.9rem; background: red; color: white;"> Borrar</button>
+                </div>
+              }
+            </article>
+          }
+        </div>
+      </section>
+    }
+
+    <!-- ==================== WEEKLY MUSIC ==================== -->
+    @if (activeTab() === 'music') {
+      <section>
+        <div class="section-header border-yellow">
+          <h3 class="chicha-text-yellow section-title">SONIDO DE LA SEMANA</h3>
+          @if (isAdmin()) {
+            <button class="chicha-btn chicha-btn-yellow" (click)="openSongModal()">+ Añadir Canción</button>
+          }
+        </div>
+        <p class="section-description">Lo que está sonando en las calles de Medellín</p>
+
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 40px; margin-top: 20px;">
+          @for (song of weeklySongs(); track song.id) {
+            <div class="music-container" style="width: 100%;">
+              <!-- Cassette Player UI -->
+              <div class="cassette-player">
+                <div class="cassette-label">
+                  <div class="cassette-title">{{ song.title }}</div>
+                  <div style="font-family: var(--font-accent); color: #000;">{{ song.artist }} <span style="color: #444; font-size: 0.8em;">({{ song.year }})</span></div>
+                  
+                  <div class="cassette-spindles">
+                    <div class="spindle" [class.spinning]="playingSongId() === song.id"></div>
+                    <div class="spindle" [class.spinning]="playingSongId() === song.id"></div>
+                  </div>
+
+                  <div class="cassette-bottom">
+                    <span class="tape-length">A</span>
+                    <span class="tape-length">60 MIN</span>
+                    <span class="tape-length">NR</span>
+                  </div>
+                </div>
+                
+                <!-- Visualizer -->
+                <div class="cumbia-wave-visualizer">
+                  <div class="wave-bar" [class.animating]="playingSongId() === song.id"></div>
+                  <div class="wave-bar" [class.animating]="playingSongId() === song.id"></div>
+                  <div class="wave-bar" [class.animating]="playingSongId() === song.id"></div>
+                  <div class="wave-bar" [class.animating]="playingSongId() === song.id"></div>
+                  <div class="wave-bar" [class.animating]="playingSongId() === song.id"></div>
+                  <div class="wave-bar" [class.animating]="playingSongId() === song.id"></div>
+                  <div class="wave-bar" [class.animating]="playingSongId() === song.id"></div>
+                </div>
+
+                <!-- Controls -->
+                <div style="margin-top: 20px; text-align: center;">
+                  <button class="chicha-btn chicha-btn-pink" (click)="playSong(song)" style="width: 100%; border-radius: 8px;">
+                     REPRODUCIR EN YOUTUBE
+                  </button>
+                </div>
+              </div>
+
+              <!-- Details -->
+              <div class="song-recommendation-details">
+                <div class="song-details-header">
+                  <h4 class="chicha-text-cyan song-details-title">¿Por qué la recomendamos?</h4>
+                  @if (isAdmin()) {
+                    <div class="song-admin-actions">
+                      <button (click)="editSong(song)" class="chicha-btn chicha-btn-yellow admin-action-btn"> Editar</button>
+                      <button (click)="deleteSong(song.id)" class="chicha-btn chicha-btn-pink admin-action-btn delete-btn"> Borrar</button>
+                    </div>
+                  }
+                </div>
+                <div class="song-reason-box">
+                  "{{ song.reason }}"
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+      </section>
+    }
+
+    <!-- ==================== COLLECTIVES (CUMBIAMBEROS) ==================== -->
+    @if (activeTab() === 'collectives') {
+      <section>
+        <div class="section-header border-pink">
+          <h3 class="chicha-text-pink section-title">CUMBIAMBEROS</h3>
+        </div>
+        <p class="section-description">Colectivos, artistas y personas aliadas que hacen vibrar la cumbia en Medellín</p>
+
+        <div class="collectives-cards-grid">
+          @for (c of collectives; track c.name) {
+            <article class="collective-card card-{{ c.class }}">
+              <div class="collective-card-header">
+                <h4 class="collective-name">{{ c.name }}</h4>
+                <span class="collective-role">{{ c.role }}</span>
+              </div>
+              <div class="collective-card-body">
+                <p class="collective-desc">{{ c.description }}</p>
+              </div>
+              <div class="collective-card-footer">
+                <a [href]="c.url" target="_blank" rel="noopener noreferrer" class="chicha-btn collective-link-btn">
+                  Ver Instagram
+                </a>
+              </div>
+            </article>
+          }
+        </div>
+      </section>
+    }
+  </main>
+
+  <!-- ==================== FOOTER ==================== -->
+  <footer class="chicha-footer">
+    <div class="footer-content">
+      <div class="footer-brand">
+      
+        <p class="footer-subtitle">El Archivo de la Cumbia</p>
+      </div>
+      
+
+      <div class="footer-bottom">
+        <p>&copy; 2026 Cumbiamberos. All rights reserved.</p>
+        <p style="margin-top: 8px;">
+          Contact: <a href="mailto:sebastian77994@gmail.com" class="footer-email-link">sebastian77994@gmail.com</a>
+        </p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ==================== MODALS ==================== -->
+  @if (showPostModal()) {
+    <div class="chicha-modal-backdrop">
+      <div class="chicha-modal">
+        <div class="modal-header">
+          <h4 class="modal-title">{{ editingPostId ? 'Editar Archivo Fotográfico' : 'Subir Archivo Fotográfico' }}</h4>
+          <button class="modal-close-btn" (click)="closePostModal()">&times;</button>
+        </div>
+        <div class="modal-body">
+          <form (ngSubmit)="submitPost()">
+            
+            <div class="form-group" style="border: 2px dashed var(--neon-cyan); padding: 15px; background: #111;">
+              <label class="chicha-label" style="color: var(--neon-cyan);">Seleccionar Fotografías</label>
+              <input type="file" multiple accept="image/*" (change)="onFilesSelected($event)" style="color: #fff; margin-bottom: 10px;">
+              <p style="color: var(--text-gray); font-size: 0.8rem; font-family: var(--font-accent);">Las fotos se guardarán en la nube  al guardar.</p>
+              
+              <!-- Previews -->
+              @if (newPost.imageUrls.length > 0) {
+                <div style="display: flex; gap: 10px; overflow-x: auto; padding-bottom: 10px;">
+                  @for (img of newPost.imageUrls; track $index) {
+                    <div style="position: relative; width: 60px; height: 60px; flex-shrink: 0; border: 2px solid var(--neon-pink);">
+                      <img [src]="img" style="width: 100%; height: 100%; object-fit: cover;">
+                      <button type="button" (click)="removeNewPostImage($index)" style="position: absolute; top: -5px; right: -5px; background: red; color: white; border: none; border-radius: 50%; width: 20px; height: 20px; font-size: 10px; cursor: pointer;">X</button>
+                    </div>
+                  }
+                </div>
+              }
+            </div>
+
+            <div class="form-group">
+              <label class="chicha-label">Lugar del Evento *</label>
+              <input type="text" class="chicha-input" [(ngModel)]="newPost.place" name="place" placeholder="Ej. El Eslabón Prendido" required maxlength="200">
+            </div>
+            <div class="form-group">
+              <label class="chicha-label">Fecha *</label>
+              <input type="text" class="chicha-input" [(ngModel)]="newPost.date" name="date" placeholder="Ej. 15 Junio 2026" required maxlength="50">
+            </div>
+            <div class="form-group">
+              <label class="chicha-label">Artistas</label>
+              <input type="text" class="chicha-input" [(ngModel)]="newPost.artists" name="artists" placeholder="Ej. Los Cumbia Stars" maxlength="300">
+            </div>
+            <div class="form-group">
+              <label class="chicha-label">Descripción</label>
+              <textarea class="chicha-input" [(ngModel)]="newPost.description" name="description" rows="3" placeholder="Contexto de la foto..." maxlength="1000"></textarea>
+            </div>
+            
+            <div class="form-group">
+              <label class="chicha-label">Link de Instagram (Opcional)</label>
+              <input type="url" class="chicha-input" [(ngModel)]="newPost.postUrl" name="postUrl" placeholder="https://instagram.com/p/..." maxlength="500">
+            </div>
+
+            <div class="modal-footer">
+              <button type="button" class="chicha-btn" (click)="closePostModal()" style="background: #444; color: #fff;" [disabled]="isUploadingImages">Cancelar</button>
+              <button type="submit" class="chicha-btn chicha-btn-pink" [disabled]="isUploadingImages">
+                {{ isUploadingImages ? ' Subiendo fotos...' : (editingPostId ? 'Guardar Cambios' : 'Guardar en Archivo') }}
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  }
+
+  @if (showEventModal()) {
+    <div class="chicha-modal-backdrop">
+      <div class="chicha-modal">
+        <div class="modal-header">
+          <h4 class="modal-title" style="color: var(--neon-cyan);">{{ editingEventId ? 'Editar Evento Cumbiero' : 'Reportar Evento Cumbiero' }}</h4>
+          <button class="modal-close-btn" (click)="closeEventModal()">&times;</button>
+        </div>
+        <div class="modal-body">
+          <form (ngSubmit)="submitEvent()">
+            <div class="form-group">
+              <label class="chicha-label">Título del Evento *</label>
+              <input type="text" class="chicha-input" [(ngModel)]="newEvent.title" name="title" placeholder="Ej. GRAN FIESTA CHICHA" required maxlength="200">
+            </div>
+            <div style="display: flex; gap: 15px;">
+              <div class="form-group" style="flex: 1;">
+                <label class="chicha-label">Fecha *</label>
+                <input type="text" class="chicha-input" [(ngModel)]="newEvent.date" name="date" placeholder="Ej. SAB 20 JUN" required maxlength="50">
+              </div>
+              <div class="form-group" style="flex: 1;">
+                <label class="chicha-label">Hora</label>
+                <input type="text" class="chicha-input" [(ngModel)]="newEvent.time" name="time" placeholder="Ej. 9:00 PM" maxlength="20">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="chicha-label">Lugar *</label>
+              <input type="text" class="chicha-input" [(ngModel)]="newEvent.place" name="place" placeholder="Ej. LA PASCASIA" required maxlength="200">
+            </div>
+            <div class="form-group">
+              <label class="chicha-label">Bandas / Artistas</label>
+              <input type="text" class="chicha-input" [(ngModel)]="newEvent.artists" name="artists" placeholder="Ej. AFROSOUND" maxlength="300">
+            </div>
+            <div class="form-group">
+              <label class="chicha-label">Precio / Cover</label>
+              <input type="text" class="chicha-input" [(ngModel)]="newEvent.price" name="price" placeholder="Ej. $30.000 COP" maxlength="100">
+            </div>
+            <div class="form-group">
+              <label class="chicha-label">Link de Instagram de la Publicación</label>
+              <input type="url" class="chicha-input" [(ngModel)]="newEvent.instagramUrl" name="instagramUrl" placeholder="https://instagram.com/..." maxlength="500">
+            </div>
+            <div class="form-group">
+              <label class="chicha-label">Descripción Breve</label>
+              <input type="text" class="chicha-input" [(ngModel)]="newEvent.description" name="description" maxlength="500">
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="chicha-btn" (click)="closeEventModal()" style="background: #444; color: #fff;">Cancelar</button>
+              <button type="submit" class="chicha-btn chicha-btn-cyan">{{ editingEventId ? 'Guardar Cambios' : 'Publicar Cartel' }}</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  }
+
+  @if (showSongModal()) {
+    <div class="chicha-modal-backdrop">
+      <div class="chicha-modal">
+        <div class="modal-header">
+          <h4 class="modal-title" style="color: var(--neon-yellow);">{{ editingSongId ? 'Editar Sonido de la Semana' : 'Añadir Sonido de la Semana' }}</h4>
+          <button class="modal-close-btn" (click)="closeSongModal()">&times;</button>
+        </div>
+        <div class="modal-body">
+          <form (ngSubmit)="submitSong()">
+            <div class="form-group">
+              <label class="chicha-label">Nombre de la Canción *</label>
+              <input type="text" class="chicha-input" [(ngModel)]="newSong.title" name="title" placeholder="Ej. Cumbia Sobre el Mar" required maxlength="200">
+            </div>
+            <div style="display: flex; gap: 15px;">
+              <div class="form-group" style="flex: 2;">
+                <label class="chicha-label">Artista *</label>
+                <input type="text" class="chicha-input" [(ngModel)]="newSong.artist" name="artist" placeholder="Ej. Los Cumbia Stars" required maxlength="200">
+              </div>
+              <div class="form-group" style="flex: 1;">
+                <label class="chicha-label">Año</label>
+                <input type="text" class="chicha-input" [(ngModel)]="newSong.year" name="year" placeholder="Ej. 2023" maxlength="4" pattern="[0-9]{4}">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="chicha-label">Enlace a YouTube *</label>
+              <input type="url" class="chicha-input" [(ngModel)]="newSong.youtubeUrl" name="youtubeUrl" placeholder="https://youtube.com/watch?v=..." required maxlength="500" pattern="https?://(www\.)?(youtube\.com|youtu\.be)/.+">
+            </div>
+            <div class="form-group">
+              <label class="chicha-label">¿Por qué la recomiendas?</label>
+              <textarea class="chicha-input" [(ngModel)]="newSong.reason" name="reason" rows="3" placeholder="Es perfecta para bailar..." maxlength="1000"></textarea>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="chicha-btn" (click)="closeSongModal()" style="background: #444; color: #fff;">Cancelar</button>
+              <button type="submit" class="chicha-btn chicha-btn-yellow">{{ editingSongId ? 'Guardar Cambios' : 'Recomendar Canción' }}</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- ==================== MODAL DE LOGIN SECRETO ==================== -->
+  @if (showLoginModal()) {
+    <div class="chicha-modal-backdrop">
+      <div class="chicha-modal" style="max-width: 400px;">
+        <div class="modal-header">
+          <h4 class="modal-title" style="color: var(--neon-cyan);"> INGRESO</h4>
+          <button class="modal-close-btn" (click)="closeLoginModal()">&times;</button>
+        </div>
+        <div class="modal-body">
+          <div style="display: flex; flex-direction: column; gap: 15px;">
+            <input type="password" [(ngModel)]="loginPassword" placeholder="Contraseña admin..." class="chicha-input" style="font-size: 1.2rem; text-align: center;" (keyup.enter)="attemptLogin()" [disabled]="loginLockCountdown > 0 || isLoggingIn" autocomplete="current-password">
+            @if (loginLockCountdown > 0) {
+              <div style="color: var(--neon-yellow); text-align: center; font-family: var(--font-accent); background: rgba(0,0,0,0.7); padding: 8px; border: 1px dashed var(--neon-yellow);">
+                Demasiados intentos. Espera {{ loginLockCountdown }}s
+              </div>
+            } @else if (showLoginError) {
+              <div style="color: #ff4444; text-align: center; font-family: var(--font-accent); background: rgba(0,0,0,0.5); padding: 5px;">Contraseña Incorrecta</div>
+            }
+            <button class="chicha-btn chicha-btn-yellow" style="font-size: 1.2rem;" (click)="attemptLogin()" [disabled]="isLoggingIn || loginLockCountdown > 0">
+              {{ loginLockCountdown > 0 ? ('Bloqueado (' + loginLockCountdown + 's)') : (isLoggingIn ? 'Verificando...' : 'INGRESAR') }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
