@@ -64,7 +64,7 @@
         </div>
         
         <div class="photo-grid">
-          @for (post of posts(); track post.id) {
+          @for (post of paginatedPosts(); track post.id) {
             <article class="chicha-card photo-card">
               <span class="chicha-badge chicha-badge-yellow">{{ post.date }}</span>
               
@@ -112,6 +112,19 @@
             </article>
           }
         </div>
+
+        <!-- Pagination Mural -->
+        @if (totalGalleryPages() > 1) {
+          <div class="chicha-pagination">
+            <button class="pagination-btn" [disabled]="galleryPage() === 1" (click)="setGalleryPage(galleryPage() - 1)">«</button>
+            @for (page of galleryPagesArray(); track page) {
+              <button class="pagination-btn pagination-btn-pink" [class.active-page]="galleryPage() === page" (click)="setGalleryPage(page)">
+                {{ page }}
+              </button>
+            }
+            <button class="pagination-btn" [disabled]="galleryPage() === totalGalleryPages()" (click)="setGalleryPage(galleryPage() + 1)">»</button>
+          </div>
+        }
       </section>
     }
 
@@ -126,7 +139,7 @@
         </div>
 
         <div class="events-grid">
-          @for (event of events(); track event.id) {
+          @for (event of paginatedEvents(); track event.id) {
             <article class="event-flyer flyer-{{ event.posterColor }}">
               <div class="flyer-header">
                 <div class="flyer-date">{{ event.date }}</div>
@@ -160,6 +173,19 @@
             </article>
           }
         </div>
+
+        <!-- Pagination Events -->
+        @if (totalEventsPages() > 1) {
+          <div class="chicha-pagination">
+            <button class="pagination-btn" [disabled]="eventsPage() === 1" (click)="setEventsPage(eventsPage() - 1)">«</button>
+            @for (page of eventsPagesArray(); track page) {
+              <button class="pagination-btn pagination-btn-green" [class.active-page]="eventsPage() === page" (click)="setEventsPage(page)">
+                {{ page }}
+              </button>
+            }
+            <button class="pagination-btn" [disabled]="eventsPage() === totalEventsPages()" (click)="setEventsPage(eventsPage() + 1)">»</button>
+          </div>
+        }
       </section>
     }
 
@@ -244,7 +270,7 @@
         <p class="section-description">Colectivos, artistas y personas aliadas que hacen vibrar la cumbia en Medellín</p>
 
         <div class="collectives-cards-grid">
-          @for (c of collectives; track c.name) {
+          @for (c of paginatedCollectives(); track c.name) {
             <article class="collective-card card-{{ c.class }}">
               <div class="collective-card-header">
                 <h4 class="collective-name">{{ c.name }}</h4>
@@ -261,6 +287,19 @@
             </article>
           }
         </div>
+
+        <!-- Pagination Collectives -->
+        @if (totalCollectivesPages() > 1) {
+          <div class="chicha-pagination">
+            <button class="pagination-btn" [disabled]="collectivesPage() === 1" (click)="setCollectivesPage(collectivesPage() - 1)">«</button>
+            @for (page of collectivesPagesArray(); track page) {
+              <button class="pagination-btn pagination-btn-yellow" [class.active-page]="collectivesPage() === page" (click)="setCollectivesPage(page)">
+                {{ page }}
+              </button>
+            }
+            <button class="pagination-btn" [disabled]="collectivesPage() === totalCollectivesPages()" (click)="setCollectivesPage(collectivesPage() + 1)">»</button>
+          </div>
+        }
       </section>
     }
   </main>

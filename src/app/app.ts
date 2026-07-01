@@ -1,4 +1,4 @@
-import { Component, signal, inject, effect } from '@angular/core';
+import { Component, signal, inject, effect, computed } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CumbiamberosService, InstagramPost, CumbiaEvent, WeeklySong } from './cumbiamberos.service';
 
@@ -16,6 +16,60 @@ export class App {
   readonly weeklySongs = this.cumbiamberosService.weeklySongs;
 
   readonly activeTab = signal<'gallery' | 'events' | 'music' | 'collectives'>('gallery');
+
+  // Pagination Gallery (Mural) - 9 per page
+  readonly galleryPage = signal(1);
+  readonly galleryPageSize = 9;
+
+  readonly paginatedPosts = computed(() => {
+    const allPosts = this.posts();
+    const startIndex = (this.galleryPage() - 1) * this.galleryPageSize;
+    return allPosts.slice(startIndex, startIndex + this.galleryPageSize);
+  });
+
+  readonly totalGalleryPages = computed(() => {
+    return Math.ceil(this.posts().length / this.galleryPageSize) || 1;
+  });
+
+  readonly galleryPagesArray = computed(() => {
+    return Array.from({ length: this.totalGalleryPages() }, (_, i) => i + 1);
+  });
+
+  // Pagination Events - 3 per page
+  readonly eventsPage = signal(1);
+  readonly eventsPageSize = 3;
+
+  readonly paginatedEvents = computed(() => {
+    const allEvents = this.events();
+    const startIndex = (this.eventsPage() - 1) * this.eventsPageSize;
+    return allEvents.slice(startIndex, startIndex + this.eventsPageSize);
+  });
+
+  readonly totalEventsPages = computed(() => {
+    return Math.ceil(this.events().length / this.eventsPageSize) || 1;
+  });
+
+  readonly eventsPagesArray = computed(() => {
+    return Array.from({ length: this.totalEventsPages() }, (_, i) => i + 1);
+  });
+
+  // Pagination Collectives (Cumbiamberos) - 9 per page
+  readonly collectivesPage = signal(1);
+  readonly collectivesPageSize = 9;
+
+  readonly paginatedCollectives = computed(() => {
+    const allCollectives = this.collectives;
+    const startIndex = (this.collectivesPage() - 1) * this.collectivesPageSize;
+    return allCollectives.slice(startIndex, startIndex + this.collectivesPageSize);
+  });
+
+  readonly totalCollectivesPages = computed(() => {
+    return Math.ceil(this.collectives.length / this.collectivesPageSize) || 1;
+  });
+
+  readonly collectivesPagesArray = computed(() => {
+    return Array.from({ length: this.totalCollectivesPages() }, (_, i) => i + 1);
+  });
 
   // Modal de Login Oculto
   readonly showLoginModal = signal(false);
@@ -199,6 +253,35 @@ export class App {
   // ── Navegación ───────────────────────────────────────────────
   selectTab(tab: 'gallery' | 'events' | 'music' | 'collectives') {
     this.activeTab.set(tab);
+    // Reset pages back to 1 on tab navigation
+    this.galleryPage.set(1);
+    this.eventsPage.set(1);
+    this.collectivesPage.set(1);
+  }
+
+  setGalleryPage(page: number) {
+    if (page >= 1 && page <= this.totalGalleryPages()) {
+      this.galleryPage.set(page);
+      this.scrollToTop();
+    }
+  }
+
+  setEventsPage(page: number) {
+    if (page >= 1 && page <= this.totalEventsPages()) {
+      this.eventsPage.set(page);
+      this.scrollToTop();
+    }
+  }
+
+  setCollectivesPage(page: number) {
+    if (page >= 1 && page <= this.totalCollectivesPages()) {
+      this.collectivesPage.set(page);
+      this.scrollToTop();
+    }
+  }
+
+  private scrollToTop() {
+    window.scrollTo({ top: 350, behavior: 'smooth' });
   }
 
   // ── Login Secreto ─────────────────────────────────────────────
@@ -362,6 +445,7 @@ export class App {
       if (this.editingPostId) {
         this.cumbiamberosService.updatePost(this.editingPostId, postData).catch(err => console.error('Error al actualizar post:', err));
       } else {
+        this.galleryPage.set(1);
         this.cumbiamberosService.addPost(postData).catch(err => console.error('Error al guardar post:', err));
       }
 
@@ -435,6 +519,7 @@ export class App {
     if (this.editingEventId) {
       this.cumbiamberosService.updateEvent(this.editingEventId, eventData).catch(err => console.error('Error al actualizar evento:', err));
     } else {
+      this.eventsPage.set(1);
       this.cumbiamberosService.addEvent(eventData).catch(err => console.error('Error al guardar evento:', err));
     }
     this.closeEventModal();
