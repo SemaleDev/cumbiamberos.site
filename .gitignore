@@ -44,3 +44,6 @@ __screenshots__/
 Thumbs.db
 # Ocultar credenciales de desarrollo
 src/environments/environment.ts
+
+# Firebase temporary cache
+.firebase/
