@@ -1,59 +1,35 @@
-# CumbiamberosApp
+#  Cumbiamberos.site
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.2.3.
+¡Bienvenidos al repositorio oficial de **Cumbiamberos**!  
+[cite_start]Este proyecto es una plataforma web dedicada a la **divulgación de eventos, memoria cultural y archivo digital** en torno a la cumbia, con un foco principal en la escena de la ciudad de Medellín[cite: 24].
 
-## Development server
+🌐 **Sitio web en vivo:** [cumbiamberos.site](https://cumbiamberos.site)
 
-To start a local development server, run:
+---
 
-```bash
-ng serve
-```
+## 🚀 Características del Proyecto
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+* **Archivo Digital:** Espacio para recopilar registros fotográficos históricos y actuales de la cultura cumbiambera.
+* **Agenda de Eventos:** Divulgación de carteles, conciertos y fechas clave de la escena musical en Medellín.
+* **Comunidad Abierta:** Zona de recomendaciones musicales y registro para colectivos o artistas independientes.
+* **Filtro de Contenido:** Conexión estratégica con sistemas de curación para evaluar los aportes de la comunidad antes de su publicación.
 
-## Code scaffolding
+---
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+## 🛠️ Tecnologías Utilizadas
 
-```bash
-ng generate component component-name
-```
+* **Framework:** Angular CLI (Versión 21.2.3) 
+* **Base de Datos y Autenticación:** Firebase 
+* **Estilos:** Tailwind CSS / CSS3 
+* **Pruebas:** Vitest
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+---
 
-```bash
-ng generate --help
-```
+✒️ Autor: @SemaleDev
 
-## Building
+Desarrollado con el corazón lleno de amor y respeto por la tradición.
+Mucho ritmo desde Medellín. 💃
 
-To build the project run:
 
-```bash
-ng build
-```
+---
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
