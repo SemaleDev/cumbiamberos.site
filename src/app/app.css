@@ -1206,3 +1206,36 @@
   border-color: var(--neon-yellow);
   color: var(--neon-yellow);
 }
+
+/* Footer Call to Action (Google Form Link) */
+.footer-cta-container {
+  background: rgba(255, 0, 127, 0.03);
+  border: 3px dashed var(--neon-pink);
+  padding: 24px;
+  max-width: 500px;
+  width: 100%;
+  margin: 15px auto;
+  text-align: center;
+  box-shadow: 0 0 15px rgba(255, 0, 127, 0.05);
+}
+
+.cta-title {
+  font-family: var(--font-accent);
+  font-size: 1.15rem;
+  margin-bottom: 10px;
+  letter-spacing: 1px;
+}
+
+.cta-text {
+  font-size: 0.9rem;
+  color: var(--text-gray);
+  margin-bottom: 20px;
+  line-height: 1.4;
+}
+
+.cta-btn {
+  display: inline-block;
+  font-size: 0.95rem;
+  padding: 10px 20px;
+  text-decoration: none;
+}
