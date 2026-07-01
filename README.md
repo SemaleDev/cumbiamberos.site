@@ -1,7 +1,7 @@
 #  Cumbiamberos.site
 
 ¡Bienvenidos al repositorio oficial de **Cumbiamberos**!  
-[cite_start]Este proyecto es una plataforma web dedicada a la **divulgación de eventos, memoria cultural y archivo digital** en torno a la cumbia, con un foco principal en la escena de la ciudad de Medellín[cite: 24].
+Este proyecto es una plataforma web dedicada a la **divulgación de eventos, memoria cultural y archivo digital** en torno a la cumbia, con un foco principal en la escena de la ciudad de Medellín
 
 🌐 **Sitio web en vivo:** [cumbiamberos.site](https://cumbiamberos.site)
 
