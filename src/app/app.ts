@@ -135,26 +135,28 @@ export class App {
 
   // Colectivos / Personas Aliadxs
   readonly collectives = [
-    { 
-      name: 'Photaurino', 
-      url: 'https://www.instagram.com/photaurino/', 
-      class: 'tag-green',
-      role: 'fotografo',
-      description: 'Capturando la memoria cumbiera y la cultura de calle en Medellín.'
-    },
+
     { 
       name: 'Insane Sebas', 
       url: 'https://www.instagram.com/insane.sebas/', 
-      class: 'tag-yellow',
+      class: 'tag-green',
       role: 'Amante de la cumbia',
       description: 'Amor y locura por los ritmos tropicales en vinilo.'
     },
+    { 
+      name: 'Photaurino', 
+      url: 'https://www.instagram.com/photaurino/', 
+      class: 'tag-yellow',
+      role: 'fotografo',
+      description: 'Capturando la memoria cumbiera y la cultura de calle en Medellín.'
+    },
+    
     { 
       name: 'Zykh', 
       url: 'https://www.instagram.com/zykh_/', 
       class: 'tag-cyan',
       role: 'Artista',
-      description: 'Difusion de la cumbia a través de la consola.'
+      description: 'Nutrido por las raíces populares, urbanas y campesinas que tiene la cumbia, ZYKH nos trae un sonido bailable, fresco y con una variedad de texturas sonoras.'
     },
     { 
       name: 'El santa Muertero', 
@@ -201,11 +203,11 @@ export class App {
       description: 'Melomana e Interdisciplinaria.'
     },
     { 
-      name: 'Caos Carolina', 
+      name: 'Caoscarolina', 
       url: 'https://www.instagram.com/caoscarolina/', 
       class: 'tag-yellow',
       role: 'Artista',
-      description: 'Dj Selectora.'
+      description: 'Chisguera de corazón, cumbia y ruido pa" todo el mundo'
     },
     
     { 
@@ -235,7 +237,15 @@ export class App {
       class: 'tag-pink',
       role: 'Artista',
       description: 'DJ-Productor Kumbia Medellín.'
+    },
+     { 
+      name: 'ComunaKumbia', 
+      url: 'https://www.instagram.com/comunakumbiaa/', 
+      class: 'tag-green',
+      role: 'Colectivo',
+      description: 'Espacio para la difusión del calor que nos pone a bailar, abrazar nuestras raíces y compartir en comunidad.'
     }
+
 
     
   ];

@@ -85,7 +85,9 @@
 }
 
 .tab-btn {
-  background: var(--bg-card);
+  background: rgba(20, 20, 20, 0.85);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   border: 3px solid #000;
   color: var(--text-white);
   cursor: pointer;
@@ -93,21 +95,22 @@
   font-size: 1rem;
   padding: 12px 20px;
   text-transform: uppercase;
-  transition: all 0.2s;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
   box-shadow: 4px 4px 0 #000;
 }
 
 .tab-btn.active {
   background: var(--neon-green);
   color: #000;
-  box-shadow: 4px 4px 0 var(--neon-pink);
-  transform: translateY(-2px);
+  box-shadow: 4px 4px 0 var(--neon-pink), 0 0 20px rgba(57, 255, 20, 0.4);
+  transform: translateY(-3px);
 }
 
 .tab-btn:hover:not(.active) {
   border-color: var(--neon-yellow);
   color: var(--neon-yellow);
-  transform: translateY(-1px);
+  transform: translateY(-2px);
+  box-shadow: 6px 6px 0 #000, 0 0 12px rgba(255, 255, 0, 0.2);
 }
 
 /* Photo Archive & Grid */
@@ -1014,7 +1017,9 @@
 }
 
 .collective-card {
-  background: var(--bg-card);
+  background: rgba(18, 18, 18, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   border: 4px solid #000;
   border-radius: 0;
   padding: 24px;
@@ -1023,12 +1028,12 @@
   justify-content: space-between;
   min-height: 280px;
   position: relative;
-  transition: transform 0.2s, box-shadow 0.2s;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   box-shadow: 6px 6px 0 #000;
 }
 
 .collective-card:hover {
-  transform: translateY(-4px);
+  transform: translateY(-6px) scale(1.01);
 }
 
 .card-tag-green {
@@ -1238,4 +1243,21 @@
   font-size: 0.95rem;
   padding: 10px 20px;
   text-decoration: none;
+}
+
+/* Header Logo Styles */
+.header-logo {
+  max-width: 100%;
+  height: auto;
+  max-height: 180px;
+  cursor: pointer;
+  user-select: none;
+  filter: drop-shadow(0 0 8px rgba(255, 0, 127, 0.4));
+  transition: transform 0.3s ease, filter 0.3s ease;
+  margin-bottom: 10px;
+}
+
+.header-logo:hover {
+  transform: scale(1.02);
+  filter: drop-shadow(0 0 16px rgba(0, 240, 255, 0.6));
 }
