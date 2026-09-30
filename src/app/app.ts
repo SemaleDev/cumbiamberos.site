@@ -1,4 +1,4 @@
-import { Component, signal, inject, effect, computed } from '@angular/core';
+import { Component, signal, inject, effect, computed, OnInit, OnDestroy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CumbiamberosService, InstagramPost, CumbiaEvent, WeeklySong } from './cumbiamberos.service';
 
@@ -8,14 +8,27 @@ import { CumbiamberosService, InstagramPost, CumbiaEvent, WeeklySong } from './c
   templateUrl: './app.html',
   styleUrl: './app.css',
 })
-export class App {
+export class App implements OnInit, OnDestroy {
+  readonly Math = Math;
   private readonly cumbiamberosService = inject(CumbiamberosService);
 
   readonly posts       = this.cumbiamberosService.posts;
   readonly events      = this.cumbiamberosService.events;
   readonly weeklySongs = this.cumbiamberosService.weeklySongs;
 
-  readonly activeTab = signal<'gallery' | 'events' | 'music' | 'collectives'>('gallery');
+  readonly activeTab = signal<'gallery' | 'events' | 'music' | 'collectives' | 'radio'>('gallery');
+
+  // Radio State
+  readonly isRadioPlaying = signal(false);
+  readonly radioLoading   = signal(false);
+  readonly radioVolume    = signal(0.8);
+  readonly isRadioMuted   = signal(false);
+  readonly radioMetadata  = signal<{ title: string; artist: string }>({
+    title: 'Sintonizando...',
+    artist: 'Radio Cumbiamberos'
+  });
+  private radioAudio: HTMLAudioElement | null = null;
+  private metadataInterval: any = null;
 
   // Pagination Gallery (Mural) - 9 per page
   readonly galleryPage = signal(1);
@@ -260,8 +273,108 @@ export class App {
     }
   }
 
+  ngOnInit() {
+    this.fetchRadioMetadata();
+    // Consultar metadatos periódicamente cada 6 segundos
+    this.metadataInterval = setInterval(() => {
+      this.fetchRadioMetadata();
+    }, 6000);
+  }
+
+  ngOnDestroy() {
+    if (this.metadataInterval) {
+      clearInterval(this.metadataInterval);
+    }
+    if (this.radioAudio) {
+      this.radioAudio.pause();
+      this.radioAudio.src = '';
+    }
+  }
+
+  async fetchRadioMetadata() {
+    const DIRECT_STATUS_URL = "https://stream.noisk8.xyz/status-json.xsl";
+    try {
+      const response = await fetch(DIRECT_STATUS_URL, {
+        cache: 'no-store',
+        headers: { accept: 'application/json' }
+      });
+      if (response.ok) {
+        const ct = response.headers.get('content-type') || '';
+        const data = await response.json();
+        const source = Array.isArray(data?.icestats?.source)
+          ? data.icestats.source[0]
+          : data?.icestats?.source;
+        if (source) {
+          this.radioMetadata.set({
+            title: source.title || 'Transmisión en Vivo',
+            artist: source.artist || 'Radio Cumbiamberos'
+          });
+        }
+      }
+    } catch (error) {
+      console.error("No se pudo obtener los metadatos del stream", error);
+    }
+  }
+
+  toggleRadio() {
+    const STREAM_URL = "https://stream.noisk8.xyz/radio.ogg";
+    if (!this.radioAudio) {
+      this.radioAudio = new Audio();
+      this.radioAudio.volume = this.radioVolume();
+      this.radioAudio.addEventListener('waiting', () => this.radioLoading.set(true));
+      this.radioAudio.addEventListener('playing', () => {
+        this.radioLoading.set(false);
+        this.isRadioPlaying.set(true);
+      });
+      this.radioAudio.addEventListener('pause', () => this.isRadioPlaying.set(false));
+      this.radioAudio.addEventListener('error', (e) => {
+        console.error('Error en streaming radio:', e);
+        this.radioLoading.set(false);
+        this.isRadioPlaying.set(false);
+      });
+    }
+
+    if (this.isRadioPlaying()) {
+      this.radioAudio.pause();
+      this.radioAudio.src = '';
+      this.isRadioPlaying.set(false);
+    } else {
+      this.radioLoading.set(true);
+      this.radioAudio.src = `${STREAM_URL}?t=${Date.now()}`;
+      this.radioAudio.load();
+      this.radioAudio.play().then(() => {
+        this.isRadioPlaying.set(true);
+        this.radioLoading.set(false);
+      }).catch(err => {
+        console.error('Error al reproducir radio:', err);
+        this.isRadioPlaying.set(false);
+        this.radioLoading.set(false);
+      });
+    }
+  }
+
+  setRadioVolume(event: Event) {
+    const target = event.target as HTMLInputElement;
+    const val = parseFloat(target.value);
+    this.radioVolume.set(val);
+    if (this.radioAudio) {
+      this.radioAudio.volume = val;
+      if (val > 0 && this.isRadioMuted()) {
+        this.isRadioMuted.set(false);
+        this.radioAudio.muted = false;
+      }
+    }
+  }
+
+  toggleRadioMute() {
+    if (!this.radioAudio) return;
+    const muted = !this.isRadioMuted();
+    this.isRadioMuted.set(muted);
+    this.radioAudio.muted = muted;
+  }
+
   // ── Navegación ───────────────────────────────────────────────
-  selectTab(tab: 'gallery' | 'events' | 'music' | 'collectives') {
+  selectTab(tab: 'gallery' | 'events' | 'music' | 'collectives' | 'radio') {
     this.activeTab.set(tab);
     // Reset pages back to 1 on tab navigation
     this.galleryPage.set(1);
