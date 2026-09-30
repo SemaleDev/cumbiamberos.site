@@ -97,6 +97,10 @@
   text-transform: uppercase;
   transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
   box-shadow: 4px 4px 0 #000;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
 }
 
 .tab-btn.active {
@@ -1271,6 +1275,7 @@
   position: relative;
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
 }
 
